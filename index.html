@@ -39,6 +39,14 @@
           </div>
           <span class="hint">Gratuita em <a href="https://console.groq.com" target="_blank">console.groq.com</a></span>
         </div>
+        <div class="input-group">
+          <label for="rapidapi-key">🏈 API-Football (RapidAPI)</label>
+          <div class="input-row">
+            <input type="password" id="rapidapi-key" placeholder="Cole sua chave RapidAPI..." />
+            <button class="btn-icon" onclick="toggleRapidKey()" title="Mostrar/ocultar">👁️</button>
+          </div>
+          <span class="hint">Para buscar dados ao vivo automaticamente</span>
+        </div>
         <div class="input-group" style="margin-bottom:0">
           <label for="odd-minima">Odd Mínima</label>
           <input type="number" id="odd-minima" value="1.70" step="0.05" min="1.10" max="10.00" />
@@ -131,11 +139,14 @@
             <input type="text" id="live-jogo" placeholder="Ex: Brasil x Argentina" />
           </div>
 
-          <!-- PLACAR + MINUTO -->
+          <!-- STATUS DA BUSCA AUTOMÁTICA -->
+          <div id="live-api-status" class="live-api-status" style="display:none;"></div>
+
+          <!-- PLACAR + MINUTO (preenchido automaticamente ou manual) -->
           <div class="live-grid-3">
             <div class="input-group" style="margin:0">
               <label for="live-minuto">⏱️ Minuto Atual</label>
-              <input type="number" id="live-minuto" placeholder="Ex: 63" min="1" max="120" />
+              <input type="number" id="live-minuto" placeholder="Auto..." min="1" max="120" />
             </div>
             <div class="input-group" style="margin:0">
               <label for="live-gols-casa">⚽ Gols Mandante</label>
@@ -147,53 +158,77 @@
             </div>
           </div>
 
-          <!-- ESTATÍSTICAS AO VIVO -->
-          <div class="live-stats-titulo">📊 Estatísticas Atuais <span class="label-hint">(preencha o que souber)</span></div>
+          <!-- ESTATÍSTICAS (preenchidas automaticamente pela API) -->
+          <div class="live-stats-titulo">
+            📊 Estatísticas em Tempo Real
+            <span id="live-auto-badge" class="live-auto-badge" style="display:none;">🤖 Auto</span>
+          </div>
           <div class="live-grid-2">
             <div class="input-group" style="margin:0">
               <label>🏠 Posse Mandante %</label>
-              <input type="number" id="live-posse-casa" placeholder="Ex: 58" min="0" max="100" />
+              <input type="number" id="live-posse-casa" placeholder="Auto..." min="0" max="100" />
             </div>
             <div class="input-group" style="margin:0">
               <label>✈️ Posse Visitante %</label>
-              <input type="number" id="live-posse-fora" placeholder="Ex: 42" min="0" max="100" />
+              <input type="number" id="live-posse-fora" placeholder="Auto..." min="0" max="100" />
             </div>
             <div class="input-group" style="margin:0">
               <label>🎯 Chutes Mandante</label>
-              <input type="number" id="live-chutes-casa" placeholder="Ex: 8" min="0" />
+              <input type="number" id="live-chutes-casa" placeholder="Auto..." min="0" />
             </div>
             <div class="input-group" style="margin:0">
               <label>🎯 Chutes Visitante</label>
-              <input type="number" id="live-chutes-fora" placeholder="Ex: 3" min="0" />
+              <input type="number" id="live-chutes-fora" placeholder="Auto..." min="0" />
             </div>
             <div class="input-group" style="margin:0">
               <label>🟩 Escanteios Mandante</label>
-              <input type="number" id="live-escanteios-casa" placeholder="Ex: 5" min="0" />
+              <input type="number" id="live-escanteios-casa" placeholder="Auto..." min="0" />
             </div>
             <div class="input-group" style="margin:0">
               <label>🟩 Escanteios Visitante</label>
-              <input type="number" id="live-escanteios-fora" placeholder="Ex: 2" min="0" />
+              <input type="number" id="live-escanteios-fora" placeholder="Auto..." min="0" />
             </div>
             <div class="input-group" style="margin:0">
               <label>🟨 Cartões Amarelos M.</label>
-              <input type="number" id="live-amarelos-casa" placeholder="Ex: 1" min="0" />
+              <input type="number" id="live-amarelos-casa" placeholder="Auto..." min="0" />
             </div>
             <div class="input-group" style="margin:0">
               <label>🟨 Cartões Amarelos V.</label>
-              <input type="number" id="live-amarelos-fora" placeholder="Ex: 2" min="0" />
+              <input type="number" id="live-amarelos-fora" placeholder="Auto..." min="0" />
+            </div>
+            <div class="input-group" style="margin:0">
+              <label>🔴 Chutes no Gol M.</label>
+              <input type="number" id="live-chutesalvo-casa" placeholder="Auto..." min="0" />
+            </div>
+            <div class="input-group" style="margin:0">
+              <label>🔴 Chutes no Gol V.</label>
+              <input type="number" id="live-chutesalvo-fora" placeholder="Auto..." min="0" />
             </div>
           </div>
 
-          <!-- EVENTOS E CONTEXTO -->
+          <!-- EVENTOS -->
           <div class="input-group" style="margin-top:14px">
-            <label for="live-eventos">📋 Eventos e Contexto</label>
-            <textarea id="live-eventos" rows="3"
-              placeholder="Ex: Gol de Vinicius Jr aos 45min, substituição do lateral direito aos 60min, time visitante com 10 jogadores desde o 72min, goleiro lesionado..."></textarea>
+            <label for="live-eventos">📋 Eventos / Contexto Extra</label>
+            <textarea id="live-eventos" rows="2"
+              placeholder="Preenchido automaticamente... ou adicione contexto extra aqui."></textarea>
           </div>
 
-          <button class="btn-primary btn-live" id="btn-live" onclick="analisarAoVivo()">
-            🔴 Analisar Momento Atual com IA
-          </button>
+          <!-- BOTÕES -->
+          <div class="live-btn-row">
+            <button class="btn-primary btn-live" id="btn-live" onclick="buscarDadosEAnalisar()">
+              🔴 Buscar Dados e Analisar com IA
+            </button>
+            <button class="btn-icon btn-live-manual" id="btn-live-manual" onclick="analisarAoVivo()" title="Analisar com dados preenchidos manualmente">
+              ✏️ Analisar Manual
+            </button>
+          </div>
+
+          <!-- CONTADOR DE ATUALIZAÇÃO AUTOMÁTICA -->
+          <div id="auto-update-bar" style="display:none;" class="auto-update-bar">
+            <span class="auto-update-dot"></span>
+            <span id="auto-update-texto">Próxima atualização em <strong id="countdown">60</strong>s</span>
+            <button class="btn-stop-auto" onclick="pararAutoUpdate()">⏹ Parar</button>
+          </div>
         </div>
 
         <!-- RESULTADO AO VIVO -->
