@@ -28,10 +28,12 @@ function salvarConfig() {
   } catch(e) {}
 }
 
+const RAPIDAPI_KEY_DEFAULT = "cafa89e5a5msh6b39693e314c26cp18311cjsnad0aa6ef0290";
+
 function carregarConfig() {
   try {
     const k  = localStorage.getItem("groq_api_key");
-    const rk = localStorage.getItem("rapidapi_key");
+    const rk = localStorage.getItem("rapidapi_key") || RAPIDAPI_KEY_DEFAULT;
     const o  = localStorage.getItem("odd_minima");
     if (k)  document.getElementById("api-key").value      = k;
     if (rk) document.getElementById("rapidapi-key").value = rk;
