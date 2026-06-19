@@ -46,16 +46,16 @@
       </div>
 
       <div class="card card-info">
-        <div class="card-title">🤖 O que a IA analisa</div>
+        <div class="card-title">🤖 O que a IA faz</div>
         <ul class="tips-list">
-          <li>Forma dos últimos 5, 10 e 15 jogos</li>
-          <li>xG, xGA e estatísticas avançadas</li>
-          <li>Lesões, suspensões e escalações</li>
-          <li>Histórico H2H completo</li>
-          <li>Análise tática e estratégia</li>
-          <li>Clima, viagem e fadiga</li>
-          <li>Oportunidades pré-jogo e ao vivo</li>
-          <li>Gatilhos específicos in-play</li>
+          <li>Busca dados reais no Flashscore</li>
+          <li>Consulta estatísticas no FBref</li>
+          <li>Verifica odds no Academia das Apostas</li>
+          <li>Placar e stats ao vivo automáticos</li>
+          <li>Lesões e escalações confirmadas</li>
+          <li>xG, H2H e forma recente real</li>
+          <li>Gatilhos in-play específicos</li>
+          <li>Análise em 2 etapas: coleta + análise</li>
         </ul>
       </div>
 
@@ -64,9 +64,10 @@
         <ul class="tips-list">
           <li>Digite um jogo por linha</li>
           <li>Pressione <kbd>Ctrl+Enter</kbd> para analisar</li>
-          <li>Clique em "Ver Análise" para detalhes</li>
-          <li>Baixe a imagem da análise no final</li>
-          <li>Use os gatilhos ao vivo durante o jogo</li>
+          <li>A IA busca dados reais na web automaticamente</li>
+          <li>Clique em "Ver Análise" para ver detalhes</li>
+          <li>No ao vivo: só coloque o nome do jogo</li>
+          <li>Baixe a análise como imagem no final</li>
         </ul>
         <div class="disclaimer-mini">
           ⚠️ Apenas fins educacionais. Aposte com responsabilidade.
@@ -100,11 +101,11 @@
           </div>
         </div>
         <div class="loading-steps">
-          <span class="step active">📊 Forma recente</span>
-          <span class="step active">🎯 xG & Stats</span>
+          <span class="step active">🌐 Buscando na web</span>
+          <span class="step active">📊 Coletando stats</span>
           <span class="step active">🚑 Lesões</span>
           <span class="step active">♟️ Táticas</span>
-          <span class="step active">🔴 Gatilhos ao vivo</span>
+          <span class="step active">🧠 Gerando análise</span>
         </div>
       </div>
 
@@ -114,85 +115,25 @@
       <!-- PAINEL AO VIVO (aparece após análise inicial) -->
       <div id="painel-ao-vivo" style="display:none;">
 
-        <div class="divisor-section"><span>🔴 ATUALIZAÇÃO AO VIVO</span></div>
+        <div class="divisor-section"><span>🔴 ANÁLISE AO VIVO</span></div>
 
         <div class="card card-live-update">
           <div class="live-update-header">
             <div class="live-pulse-wrap"><span class="live-pulse"></span></div>
             <div>
-              <div class="live-update-title">🔴 Jogo em Andamento — Atualizar Análise</div>
-              <div class="live-update-sub">Informe o estado atual do jogo e a IA re-analisa com os dados reais do momento</div>
+              <div class="live-update-title">🔴 Análise Ao Vivo — Automática</div>
+              <div class="live-update-sub">A IA busca automaticamente o placar, estatísticas e eventos em tempo real no Flashscore, SofaScore e FBref</div>
             </div>
           </div>
 
-          <!-- SELETOR DE JOGO -->
-          <div class="input-group">
-            <label for="live-jogo">Jogo em Andamento</label>
+          <div class="input-group" style="margin-bottom:14px">
+            <label for="live-jogo">⚽ Nome do Jogo</label>
             <input type="text" id="live-jogo" placeholder="Ex: Brasil x Argentina" />
-          </div>
-
-          <!-- PLACAR + MINUTO -->
-          <div class="live-grid-3">
-            <div class="input-group" style="margin:0">
-              <label for="live-minuto">⏱️ Minuto Atual</label>
-              <input type="number" id="live-minuto" placeholder="Ex: 63" min="1" max="120" />
-            </div>
-            <div class="input-group" style="margin:0">
-              <label for="live-gols-casa">⚽ Gols Mandante</label>
-              <input type="number" id="live-gols-casa" placeholder="0" min="0" max="20" value="0" />
-            </div>
-            <div class="input-group" style="margin:0">
-              <label for="live-gols-fora">⚽ Gols Visitante</label>
-              <input type="number" id="live-gols-fora" placeholder="0" min="0" max="20" value="0" />
-            </div>
-          </div>
-
-          <!-- ESTATÍSTICAS AO VIVO -->
-          <div class="live-stats-titulo">📊 Estatísticas Atuais <span class="label-hint">(preencha o que souber)</span></div>
-          <div class="live-grid-2">
-            <div class="input-group" style="margin:0">
-              <label>🏠 Posse Mandante %</label>
-              <input type="number" id="live-posse-casa" placeholder="Ex: 58" min="0" max="100" />
-            </div>
-            <div class="input-group" style="margin:0">
-              <label>✈️ Posse Visitante %</label>
-              <input type="number" id="live-posse-fora" placeholder="Ex: 42" min="0" max="100" />
-            </div>
-            <div class="input-group" style="margin:0">
-              <label>🎯 Chutes Mandante</label>
-              <input type="number" id="live-chutes-casa" placeholder="Ex: 8" min="0" />
-            </div>
-            <div class="input-group" style="margin:0">
-              <label>🎯 Chutes Visitante</label>
-              <input type="number" id="live-chutes-fora" placeholder="Ex: 3" min="0" />
-            </div>
-            <div class="input-group" style="margin:0">
-              <label>🟩 Escanteios Mandante</label>
-              <input type="number" id="live-escanteios-casa" placeholder="Ex: 5" min="0" />
-            </div>
-            <div class="input-group" style="margin:0">
-              <label>🟩 Escanteios Visitante</label>
-              <input type="number" id="live-escanteios-fora" placeholder="Ex: 2" min="0" />
-            </div>
-            <div class="input-group" style="margin:0">
-              <label>🟨 Cartões Amarelos M.</label>
-              <input type="number" id="live-amarelos-casa" placeholder="Ex: 1" min="0" />
-            </div>
-            <div class="input-group" style="margin:0">
-              <label>🟨 Cartões Amarelos V.</label>
-              <input type="number" id="live-amarelos-fora" placeholder="Ex: 2" min="0" />
-            </div>
-          </div>
-
-          <!-- EVENTOS -->
-          <div class="input-group" style="margin-top:14px">
-            <label for="live-eventos">📋 Eventos / Contexto</label>
-            <textarea id="live-eventos" rows="3"
-              placeholder="Ex: Gol de Vinicius Jr aos 45min, cartão amarelo para o goleiro, time visitante com 10 jogadores..."></textarea>
+            <span class="hint">💡 Só isso! A IA busca tudo sozinha — placar, stats, eventos, momentum</span>
           </div>
 
           <button class="btn-primary btn-live" id="btn-live" onclick="analisarAoVivo()">
-            🔴 Analisar Momento Atual com IA
+            🔴 Buscar Dados Ao Vivo e Analisar
           </button>
         </div>
 
