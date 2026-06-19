@@ -595,3 +595,420 @@ kbd {
   .btn-export { flex: 1; text-align: center; }
   .av-card-header { flex-wrap: wrap; }
 }
+
+
+/* ============================================
+   PAINEL AO VIVO — CARD DE ENTRADA
+   ============================================ */
+
+.card-live-update {
+  border-color: rgba(240,68,68,0.35) !important;
+  background: linear-gradient(135deg, #150d0d, #110d18) !important;
+  box-shadow: 0 4px 32px rgba(240,68,68,0.1) !important;
+}
+
+.live-update-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding-bottom: 18px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid rgba(240,68,68,0.15);
+}
+
+.live-pulse-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 3px;
+  flex-shrink: 0;
+}
+
+.live-pulse {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--danger);
+  box-shadow: 0 0 12px var(--danger);
+  animation: pulse-dot 1s infinite;
+}
+
+.live-update-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.live-update-sub {
+  font-size: 0.82rem;
+  color: var(--text2);
+  line-height: 1.5;
+}
+
+/* Grids de inputs */
+.live-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.live-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.live-stats-titulo {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.btn-live {
+  background: linear-gradient(135deg, #c0392b, #962d22) !important;
+  color: #fff !important;
+  margin-top: 6px;
+}
+
+.btn-live:hover:not(:disabled) {
+  box-shadow: 0 8px 24px rgba(240,68,68,0.4) !important;
+}
+
+/* ============================================
+   RESULTADO AO VIVO — WRAPPER
+   ============================================ */
+
+.live-resultado-wrap {
+  background: var(--bg2);
+  border: 1px solid rgba(240,68,68,0.3);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 4px 32px rgba(240,68,68,0.12);
+  margin-top: 14px;
+}
+
+/* ============================================
+   CABEÇALHO DO RESULTADO — PLACAR
+   ============================================ */
+
+.live-resultado-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #1a0d0d, #12101a);
+  border-bottom: 1px solid rgba(240,68,68,0.2);
+  flex-wrap: wrap;
+}
+
+.live-resultado-placar {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.live-resultado-jogo {
+  font-size: 0.82rem;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 600;
+}
+
+.live-resultado-score {
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.live-resultado-min {
+  font-size: 0.82rem;
+  color: var(--danger);
+  font-weight: 600;
+}
+
+/* Momentum badge */
+.live-momentum-badge {
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 8px 16px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.live-momentum-home {
+  background: rgba(0,212,154,0.15);
+  color: var(--accent);
+  border: 1px solid rgba(0,212,154,0.3);
+}
+
+.live-momentum-away {
+  background: rgba(0,149,247,0.15);
+  color: var(--accent2);
+  border: 1px solid rgba(0,149,247,0.3);
+}
+
+.live-momentum-equal {
+  background: rgba(245,158,11,0.15);
+  color: var(--warning);
+  border: 1px solid rgba(245,158,11,0.3);
+}
+
+/* Stats pills ao vivo */
+.live-stats-row {
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  border-radius: 0 !important;
+}
+
+.stat-pill-live {
+  background: var(--bg4) !important;
+  border-color: rgba(240,68,68,0.2) !important;
+}
+
+/* ============================================
+   LEITURA DO MOMENTO + MOMENTUM
+   ============================================ */
+
+.live-momento {
+  padding: 16px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.live-momento-titulo {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent2);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 8px;
+}
+
+.live-momento-texto {
+  font-size: 0.9rem;
+  color: var(--text2);
+  line-height: 1.75;
+  border-left: 3px solid var(--accent2);
+  padding-left: 14px;
+}
+
+.live-momento-momentum .live-momento-titulo {
+  color: var(--warning);
+}
+
+.live-momento-momentum .live-momento-texto {
+  border-left-color: var(--warning);
+}
+
+/* ============================================
+   MELHOR APOSTA AGORA — DESTAQUE PRINCIPAL
+   ============================================ */
+
+.live-aposta-agora {
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.live-aposta-agora-label {
+  background: linear-gradient(135deg, #6b0000, #3a0000);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 8px;
+  border-bottom: 1px solid rgba(240,68,68,0.3);
+}
+
+.live-aposta-agora-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  background: linear-gradient(135deg, #1a0d0d, #130d17);
+  border-bottom: 1px solid rgba(240,68,68,0.15);
+  flex-wrap: wrap;
+}
+
+.live-aposta-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+}
+
+.live-aposta-mercado {
+  font-size: 0.72rem;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 600;
+}
+
+.live-aposta-nome {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.live-aposta-janela {
+  font-size: 0.8rem;
+  color: var(--warning);
+  font-weight: 600;
+}
+
+.live-aposta-odd-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.live-odd {
+  font-size: 2.4rem !important;
+  color: var(--danger) !important;
+}
+
+/* Justificativa e alerta */
+.live-justificativa {
+  padding: 14px 22px;
+  border-bottom: 1px solid rgba(240,68,68,0.1);
+}
+
+.live-justificativa-titulo {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 7px;
+}
+
+.live-justificativa-corpo {
+  font-size: 0.87rem;
+  color: var(--text2);
+  line-height: 1.7;
+  border-left: 3px solid var(--accent);
+  padding-left: 12px;
+}
+
+.live-alerta .live-justificativa-titulo { color: var(--danger); }
+.live-alerta .live-justificativa-corpo  { border-left-color: var(--danger); }
+
+/* ============================================
+   APOSTA ALTERNATIVA
+   ============================================ */
+
+.live-alternativa {
+  border-bottom: 1px solid var(--border);
+  padding: 16px 22px;
+  background: var(--bg3);
+}
+
+.live-alt-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 10px;
+}
+
+.live-alt-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.live-alt-just {
+  font-size: 0.82rem;
+  color: var(--text2);
+  margin-top: 5px;
+  line-height: 1.6;
+}
+
+.live-odd-alt {
+  font-size: 1.6rem !important;
+  color: var(--accent2) !important;
+  flex-shrink: 0;
+}
+
+/* ============================================
+   SEÇÕES DE DETALHE AO VIVO
+   ============================================ */
+
+.live-secao-detalhe {
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.live-secao-detalhe:last-of-type { border-bottom: none; }
+
+.live-secao-titulo {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.live-secao-corpo {
+  font-size: 0.87rem;
+  color: var(--text2);
+  line-height: 1.75;
+  border-left: 3px solid var(--accent);
+  padding-left: 12px;
+}
+
+.live-secao-risco .live-secao-titulo { color: var(--danger); }
+.live-secao-risco .live-secao-corpo  { border-left-color: var(--danger); }
+
+/* ============================================
+   BARRA DE EXPORT AO VIVO
+   ============================================ */
+
+.live-export-bar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 16px 22px;
+  background: var(--bg3);
+  border-top: 1px solid var(--border);
+}
+
+/* ============================================
+   RESPONSIVO AO VIVO
+   ============================================ */
+
+@media (max-width: 700px) {
+  .live-grid-3 { grid-template-columns: 1fr 1fr; }
+  .live-grid-3 > :first-child { grid-column: 1 / -1; }
+  .live-resultado-header { flex-direction: column; align-items: flex-start; }
+  .live-resultado-score  { font-size: 2.2rem; }
+  .live-odd              { font-size: 1.8rem !important; }
+  .live-aposta-agora-body { flex-direction: column; align-items: flex-start; }
+  .live-aposta-odd-wrap  { flex-direction: row; align-items: center; gap: 10px; }
+  .live-export-bar       { flex-direction: column; }
+  .live-export-bar .btn-export { width: 100%; text-align: center; }
+}
+
+@media (max-width: 500px) {
+  .live-grid-2 { grid-template-columns: 1fr; }
+  .live-grid-3 { grid-template-columns: 1fr; }
+}

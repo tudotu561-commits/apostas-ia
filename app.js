@@ -628,6 +628,7 @@ async function analisarJogos() {
     }
 
     renderizarResultados(dados);
+    mostrarPainelAoVivo(jogos);
 
   } catch(e) {
     mostrarErro(e.message || "Erro inesperado. Tente novamente.");
@@ -645,3 +646,324 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.ctrlKey && e.key === "Enter") analisarJogos();
   });
 });
+
+// ===== PROMPT AO VIVO =====
+function montarPromptAoVivo(dadosLive, oddMinima, contextoOriginal) {
+  const {
+    jogo, minuto,
+    golsCasa, golsFora,
+    posseCasa, posseFora,
+    chutesCasa, chutesFora,
+    escanteiosCasa, escanteiosFora,
+    amarelosCasa, amarelosFora,
+    eventos
+  } = dadosLive;
+
+  const placar = `${golsCasa} x ${golsFora}`;
+  const agora = new Date();
+  const horario = agora.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+  const data    = agora.toLocaleDateString("pt-BR");
+
+  return `⚽ LIVE MATCH ANALYST — REAL-TIME IN-PLAY ANALYSIS
+
+You are an elite football betting analyst. A match is currently IN PROGRESS.
+Analyze the current match state and identify the BEST betting opportunities RIGHT NOW.
+
+════════════════════════════════════
+CURRENT MATCH STATUS (as of ${horario} on ${data})
+════════════════════════════════════
+Match:   ${jogo}
+Minute:  ${minuto}'
+Score:   ${placar}
+
+════════════════════════════════════
+LIVE STATISTICS (current moment)
+════════════════════════════════════
+Possession:      ${posseCasa ? posseCasa + "% (home)" : "N/A"} vs ${posseFora ? posseFora + "% (away)" : "N/A"}
+Shots:           ${chutesCasa ? chutesCasa + " (home)" : "N/A"} vs ${chutesFora ? chutesFora + " (away)" : "N/A"}
+Corners:         ${escanteiosCasa ? escanteiosCasa + " (home)" : "N/A"} vs ${escanteiosFora ? escanteiosFora + " (away)" : "N/A"}
+Yellow Cards:    ${amarelosCasa ? amarelosCasa + " (home)" : "N/A"} vs ${amarelosFora ? amarelosFora + " (away)" : "N/A"}
+
+════════════════════════════════════
+MATCH EVENTS & CONTEXT
+════════════════════════════════════
+${eventos || "No additional events reported."}
+
+════════════════════════════════════
+PRE-MATCH CONTEXT
+════════════════════════════════════
+${contextoOriginal || "Standard pre-match analysis applies."}
+
+════════════════════════════════════
+BETTING CONFIGURATION
+════════════════════════════════════
+Minimum odd: ${oddMinima}
+Current time: ${horario}
+
+════════════════════════════════════
+YOUR TASK
+════════════════════════════════════
+Based on the CURRENT match state at minute ${minuto} with score ${placar}:
+
+1. Assess the match momentum and dynamics RIGHT NOW
+2. Identify which team is dominating and why
+3. Find the BEST live betting opportunity considering:
+   - Current score and how each team will react
+   - Remaining time (${minuto} minutes played, ~${90 - parseInt(minuto) || "?"} remaining)
+   - Live statistics showing dominance patterns
+   - Psychological pressure on each team
+   - Likely tactical adjustments ahead
+   - Available markets: Next Goal, Over/Under remaining goals, Asian Handicap live,
+     Both Teams to Score, Correct Score, Double Chance, Corners remaining, Cards
+
+4. Give a CLEAR recommendation for what to bet RIGHT NOW
+
+Return ONLY this exact JSON (no markdown, no text before or after):
+
+{
+  "horario_analise": "${horario}",
+  "jogo": "${jogo}",
+  "minuto": "${minuto}",
+  "placar_atual": "${placar}",
+  "resumo_momento": "2-3 sentences describing the current match state and momentum in Portuguese",
+  "time_dominante": "home or away or equal",
+  "momentum": "Description of which team is in control and why, based on stats and events",
+  "melhor_aposta_live": {
+    "aposta": "Exact bet to place RIGHT NOW",
+    "mercado": "Market name",
+    "odd_estimada": "1.95",
+    "confianca": "Alta",
+    "nivel_risco": "Baixo",
+    "justificativa": "Why this is the best bet at this exact moment — reference the current score, stats, minute, and dynamics",
+    "janela_ideal": "How long this opportunity is valid e.g. Next 10-15 minutes / Before 80th minute",
+    "alertas": "What would invalidate this bet — specific events to watch for"
+  },
+  "aposta_alternativa": {
+    "aposta": "Alternative bet if the main bet odds change",
+    "mercado": "Market name",
+    "odd_estimada": "2.10",
+    "justificativa": "Why this is a solid alternative right now"
+  },
+  "analise_estatisticas": "Deep analysis of what the current stats reveal about the match trajectory",
+  "proximo_evento_esperado": "What is most likely to happen next based on the current dynamics",
+  "riscos_agora": "Current risks and what to watch out for in the next few minutes",
+  "stats_live": [
+    {"icone": "⏱️", "label": "Minuto", "valor": "${minuto}'"},
+    {"icone": "🏆", "label": "Placar", "valor": "${placar}"},
+    {"icone": "📊", "label": "Posse", "valor": "${posseCasa || "?"}% x ${posseFora || "?"}%"},
+    {"icone": "🎯", "label": "Chutes", "valor": "${chutesCasa || "?"} x ${chutesFora || "?"}"},
+    {"icone": "🟩", "label": "Escanteios", "valor": "${escanteiosCasa || "?"} x ${escanteiosFora || "?"}"},
+    {"icone": "🟨", "label": "Amarelos", "valor": "${amarelosCasa || "?"} x ${amarelosFora || "?"}"}
+  ]
+}
+
+RULES:
+- odd_estimada MUST be >= ${oddMinima}
+- "confianca" = "Alta", "Media" or "Baixa"
+- "nivel_risco" = "Baixo", "Médio" or "Alto"
+- ALL text in Brazilian Portuguese
+- Base every recommendation on the ACTUAL current match data provided
+- Return ONLY valid JSON`;
+}
+
+// ===== RENDERIZA PAINEL AO VIVO APÓS ANÁLISE =====
+function mostrarPainelAoVivo(jogos) {
+  const painel = document.getElementById("painel-ao-vivo");
+  painel.style.display = "block";
+  // Pré-preenche o primeiro jogo se houver só um
+  const linhas = jogos.split("\n").map(l => l.trim()).filter(Boolean);
+  if (linhas.length === 1) {
+    const jogo = linhas[0].split(" - ")[0].trim();
+    document.getElementById("live-jogo").value = jogo;
+  }
+  painel.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// ===== RENDERIZA RESULTADO AO VIVO =====
+function renderizarResultadoAoVivo(dados) {
+  const ml = dados.melhor_aposta_live || {};
+  const alt = dados.aposta_alternativa || {};
+
+  const confClass = { Alta: "confianca-alta", Media: "confianca-media", Baixa: "confianca-baixa" }[ml.confianca] || "confianca-media";
+  const confIcon  = { Alta: "✅", Media: "⚡", Baixa: "⚠️" }[ml.confianca] || "⚡";
+  const riskClass = { "Baixo": "risco-baixo", "Médio": "risco-medio", "Alto": "risco-alto" }[ml.nivel_risco] || "risco-medio";
+  const riskIcon  = { "Baixo": "🟢", "Médio": "🟡", "Alto": "🔴" }[ml.nivel_risco] || "🟡";
+
+  const statsHtml = (dados.stats_live || []).map(s =>
+    `<div class="stat-pill stat-pill-live"><span>${s.icone}</span><span>${s.label}:</span><strong>${s.valor}</strong></div>`
+  ).join("");
+
+  const html = `
+    <div class="live-resultado-wrap">
+
+      <!-- CABEÇALHO DO RESULTADO -->
+      <div class="live-resultado-header">
+        <div class="live-resultado-placar">
+          <div class="live-resultado-jogo">${dados.jogo || ""}</div>
+          <div class="live-resultado-score">${dados.placar_atual || ""}</div>
+          <div class="live-resultado-min">⏱️ ${dados.minuto || "?"}' — Análise às ${dados.horario_analise || ""}</div>
+        </div>
+        <div class="live-momentum-badge live-momentum-${dados.time_dominante || "equal"}">
+          ${dados.time_dominante === "home" ? "🏠 Mandante Dominando" :
+            dados.time_dominante === "away" ? "✈️ Visitante Dominando" : "⚖️ Equilíbrio"}
+        </div>
+      </div>
+
+      <!-- STATS AO VIVO -->
+      ${statsHtml ? `<div class="op-stats live-stats-row">${statsHtml}</div>` : ""}
+
+      <!-- RESUMO DO MOMENTO -->
+      <div class="live-momento">
+        <div class="live-momento-titulo">🧠 Leitura do Momento</div>
+        <div class="live-momento-texto">${dados.resumo_momento || ""}</div>
+      </div>
+      ${dados.momentum ? `
+      <div class="live-momento live-momento-momentum">
+        <div class="live-momento-titulo">📈 Momentum</div>
+        <div class="live-momento-texto">${dados.momentum}</div>
+      </div>` : ""}
+
+      <!-- MELHOR APOSTA AGORA -->
+      <div class="live-aposta-agora">
+        <div class="live-aposta-agora-label">🔴 APOSTAR AGORA</div>
+        <div class="live-aposta-agora-body">
+          <div class="live-aposta-info">
+            <div class="live-aposta-mercado">${ml.mercado || ""}</div>
+            <div class="live-aposta-nome">${ml.aposta || ""}</div>
+            <div class="live-aposta-janela">⏳ ${ml.janela_ideal || ""}</div>
+          </div>
+          <div class="live-aposta-odd-wrap">
+            <div class="op-odd-label">Odd Est.</div>
+            <div class="op-odd-valor live-odd">${ml.odd_estimada || ""}</div>
+            <span class="badge badge-confianca ${confClass}">${confIcon} ${ml.confianca || ""}</span>
+            <span class="badge badge-risco ${riskClass}">${riskIcon} ${ml.nivel_risco || ""}</span>
+          </div>
+        </div>
+
+        ${ml.justificativa ? `
+        <div class="live-justificativa">
+          <div class="live-justificativa-titulo">💡 Por que apostar agora</div>
+          <div class="live-justificativa-corpo">${ml.justificativa}</div>
+        </div>` : ""}
+
+        ${ml.alertas ? `
+        <div class="live-justificativa live-alerta">
+          <div class="live-justificativa-titulo">🚨 Fique atento</div>
+          <div class="live-justificativa-corpo">${ml.alertas}</div>
+        </div>` : ""}
+      </div>
+
+      <!-- APOSTA ALTERNATIVA -->
+      ${alt.aposta ? `
+      <div class="live-alternativa">
+        <div class="live-alt-label">🔁 Alternativa</div>
+        <div class="live-alt-body">
+          <div>
+            <div class="live-aposta-mercado">${alt.mercado || ""}</div>
+            <div class="live-aposta-nome">${alt.aposta || ""}</div>
+            ${alt.justificativa ? `<div class="live-alt-just">${alt.justificativa}</div>` : ""}
+          </div>
+          <div class="op-odd-valor live-odd-alt">${alt.odd_estimada || ""}</div>
+        </div>
+      </div>` : ""}
+
+      <!-- ANÁLISE + PRÓXIMO EVENTO + RISCOS -->
+      ${dados.analise_estatisticas ? `
+      <div class="live-secao-detalhe">
+        <div class="live-secao-titulo">📊 Análise das Estatísticas</div>
+        <div class="live-secao-corpo">${dados.analise_estatisticas}</div>
+      </div>` : ""}
+
+      ${dados.proximo_evento_esperado ? `
+      <div class="live-secao-detalhe">
+        <div class="live-secao-titulo">🔮 Próximo Evento Esperado</div>
+        <div class="live-secao-corpo">${dados.proximo_evento_esperado}</div>
+      </div>` : ""}
+
+      ${dados.riscos_agora ? `
+      <div class="live-secao-detalhe live-secao-risco">
+        <div class="live-secao-titulo">⚠️ Riscos Agora</div>
+        <div class="live-secao-corpo">${dados.riscos_agora}</div>
+      </div>` : ""}
+
+      <!-- BOTÃO EXPORTAR AO VIVO -->
+      <div class="live-export-bar">
+        <button class="btn-export btn-export-vivo" onclick="exportarImagem('live-resultado-wrap-outer', 'ao-vivo')">
+          📸 Baixar Esta Análise Ao Vivo
+        </button>
+        <button class="btn-export" style="background:var(--bg4);color:var(--text2);border:1px solid var(--border);" onclick="analisarAoVivo()">
+          🔄 Atualizar Análise
+        </button>
+      </div>
+    </div>`;
+
+  const wrapper = document.createElement("div");
+  wrapper.id = "live-resultado-wrap-outer";
+  wrapper.innerHTML = html;
+
+  const container = document.getElementById("resultado-ao-vivo");
+  container.innerHTML = "";
+  container.appendChild(wrapper);
+  wrapper.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// ===== ANALISAR AO VIVO =====
+async function analisarAoVivo() {
+  const apiKey = document.getElementById("api-key").value.trim();
+  const jogo   = document.getElementById("live-jogo").value.trim();
+  const minuto = document.getElementById("live-minuto").value.trim();
+  const golsCasa = document.getElementById("live-gols-casa").value || "0";
+  const golsFora = document.getElementById("live-gols-fora").value || "0";
+  const oddMinima = document.getElementById("odd-minima").value || "1.70";
+
+  if (!apiKey) { alert("Insira sua chave Groq na sidebar."); return; }
+  if (!jogo)   { alert("Informe o nome do jogo."); return; }
+  if (!minuto) { alert("Informe o minuto atual do jogo."); return; }
+
+  const dadosLive = {
+    jogo, minuto, golsCasa, golsFora,
+    posseCasa:       document.getElementById("live-posse-casa").value,
+    posseFora:       document.getElementById("live-posse-fora").value,
+    chutesCasa:      document.getElementById("live-chutes-casa").value,
+    chutesFora:      document.getElementById("live-chutes-fora").value,
+    escanteiosCasa:  document.getElementById("live-escanteios-casa").value,
+    escanteiosFora:  document.getElementById("live-escanteios-fora").value,
+    amarelosCasa:    document.getElementById("live-amarelos-casa").value,
+    amarelosFora:    document.getElementById("live-amarelos-fora").value,
+    eventos:         document.getElementById("live-eventos").value,
+  };
+
+  const contextoOriginal = document.getElementById("jogos-input").value;
+
+  const btn = document.getElementById("btn-live");
+  const container = document.getElementById("resultado-ao-vivo");
+
+  btn.disabled = true;
+  btn.innerHTML = `<span class="btn-spinner"></span> Analisando momento atual...`;
+  container.innerHTML = `
+    <div class="loading-card" style="margin-top:12px;">
+      <div class="loading-inner">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">
+          <strong>Analisando ${jogo} ao vivo...</strong>
+          <span>Minuto ${minuto}' · Placar ${golsCasa} x ${golsFora} · Processando dados em tempo real</span>
+        </div>
+      </div>
+    </div>`;
+
+  try {
+    const prompt   = montarPromptAoVivo(dadosLive, oddMinima, contextoOriginal);
+    const resposta = await chamarGroq(apiKey, prompt);
+    const dados    = parseResposta(resposta);
+    renderizarResultadoAoVivo(dados);
+  } catch(e) {
+    container.innerHTML = `
+      <div class="erro-card" style="margin-top:12px;">
+        <div class="erro-icon">⚠️</div>
+        <div><strong>Erro na análise ao vivo</strong><br/>${e.message}</div>
+      </div>`;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `🔴 Analisar Momento Atual com IA`;
+  }
+}

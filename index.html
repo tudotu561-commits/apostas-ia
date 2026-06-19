@@ -111,6 +111,96 @@
       <!-- RESULTADOS -->
       <div id="resultados"></div>
 
+      <!-- PAINEL AO VIVO (aparece após análise inicial) -->
+      <div id="painel-ao-vivo" style="display:none;">
+
+        <div class="divisor-section"><span>🔴 ATUALIZAÇÃO AO VIVO</span></div>
+
+        <div class="card card-live-update">
+          <div class="live-update-header">
+            <div class="live-pulse-wrap"><span class="live-pulse"></span></div>
+            <div>
+              <div class="live-update-title">🔴 Jogo em Andamento — Atualizar Análise</div>
+              <div class="live-update-sub">Informe o estado atual do jogo e a IA re-analisa com os dados reais do momento</div>
+            </div>
+          </div>
+
+          <!-- SELETOR DE JOGO -->
+          <div class="input-group">
+            <label for="live-jogo">Jogo em Andamento</label>
+            <input type="text" id="live-jogo" placeholder="Ex: Brasil x Argentina" />
+          </div>
+
+          <!-- PLACAR + MINUTO -->
+          <div class="live-grid-3">
+            <div class="input-group" style="margin:0">
+              <label for="live-minuto">⏱️ Minuto Atual</label>
+              <input type="number" id="live-minuto" placeholder="Ex: 63" min="1" max="120" />
+            </div>
+            <div class="input-group" style="margin:0">
+              <label for="live-gols-casa">⚽ Gols Mandante</label>
+              <input type="number" id="live-gols-casa" placeholder="0" min="0" max="20" value="0" />
+            </div>
+            <div class="input-group" style="margin:0">
+              <label for="live-gols-fora">⚽ Gols Visitante</label>
+              <input type="number" id="live-gols-fora" placeholder="0" min="0" max="20" value="0" />
+            </div>
+          </div>
+
+          <!-- ESTATÍSTICAS AO VIVO -->
+          <div class="live-stats-titulo">📊 Estatísticas Atuais <span class="label-hint">(preencha o que souber)</span></div>
+          <div class="live-grid-2">
+            <div class="input-group" style="margin:0">
+              <label>🏠 Posse Mandante %</label>
+              <input type="number" id="live-posse-casa" placeholder="Ex: 58" min="0" max="100" />
+            </div>
+            <div class="input-group" style="margin:0">
+              <label>✈️ Posse Visitante %</label>
+              <input type="number" id="live-posse-fora" placeholder="Ex: 42" min="0" max="100" />
+            </div>
+            <div class="input-group" style="margin:0">
+              <label>🎯 Chutes Mandante</label>
+              <input type="number" id="live-chutes-casa" placeholder="Ex: 8" min="0" />
+            </div>
+            <div class="input-group" style="margin:0">
+              <label>🎯 Chutes Visitante</label>
+              <input type="number" id="live-chutes-fora" placeholder="Ex: 3" min="0" />
+            </div>
+            <div class="input-group" style="margin:0">
+              <label>🟩 Escanteios Mandante</label>
+              <input type="number" id="live-escanteios-casa" placeholder="Ex: 5" min="0" />
+            </div>
+            <div class="input-group" style="margin:0">
+              <label>🟩 Escanteios Visitante</label>
+              <input type="number" id="live-escanteios-fora" placeholder="Ex: 2" min="0" />
+            </div>
+            <div class="input-group" style="margin:0">
+              <label>🟨 Cartões Amarelos M.</label>
+              <input type="number" id="live-amarelos-casa" placeholder="Ex: 1" min="0" />
+            </div>
+            <div class="input-group" style="margin:0">
+              <label>🟨 Cartões Amarelos V.</label>
+              <input type="number" id="live-amarelos-fora" placeholder="Ex: 2" min="0" />
+            </div>
+          </div>
+
+          <!-- EVENTOS E CONTEXTO -->
+          <div class="input-group" style="margin-top:14px">
+            <label for="live-eventos">📋 Eventos e Contexto</label>
+            <textarea id="live-eventos" rows="3"
+              placeholder="Ex: Gol de Vinicius Jr aos 45min, substituição do lateral direito aos 60min, time visitante com 10 jogadores desde o 72min, goleiro lesionado..."></textarea>
+          </div>
+
+          <button class="btn-primary btn-live" id="btn-live" onclick="analisarAoVivo()">
+            🔴 Analisar Momento Atual com IA
+          </button>
+        </div>
+
+        <!-- RESULTADO AO VIVO -->
+        <div id="resultado-ao-vivo"></div>
+
+      </div>
+
     </section>
   </main>
 
