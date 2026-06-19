@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>⚽ Análise de Apostas - IA</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-icon">⚽</div>
+      <div>
+        <h1>Análise de Apostas <span class="badge-ai">IA</span></h1>
+        <p class="subtitle">Copa do Mundo 2026 · Análise com Inteligência Artificial</p>
+      </div>
+    </header>
+
+    <div class="card">
+      <div class="card-title">🔑 Configuração</div>
+      <div class="input-group">
+        <label for="api-key">Chave da API Groq</label>
+        <div class="input-row">
+          <input type="password" id="api-key" placeholder="Cole sua chave aqui: gsk_..." />
+          <button class="btn-secondary" onclick="toggleApiKey()">👁️</button>
+        </div>
+        <span class="hint">Gratuita em <a href="https://console.groq.com" target="_blank">console.groq.com</a></span>
+      </div>
+      <div class="input-group">
+        <label for="odd-minima">Odd Mínima</label>
+        <input type="number" id="odd-minima" value="1.70" step="0.05" min="1.10" max="5.00" />
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📅 Jogos para Analisar</div>
+      <p class="card-desc">Informe os jogos que deseja analisar. Coloque um jogo por linha.</p>
+      <div class="input-group">
+        <label for="jogos-input">Jogos de Hoje</label>
+        <textarea id="jogos-input" rows="6" placeholder="Exemplo:
+Brasil x Argentina - Copa do Mundo 2026
+França x Alemanha - Copa do Mundo 2026
+Espanha x Portugal - Copa do Mundo 2026"></textarea>
+      </div>
+      <div class="input-group">
+        <label for="contexto-extra">Contexto Extra (opcional)</label>
+        <textarea id="contexto-extra" rows="3" placeholder="Ex: Brasil vem de 3 vitórias seguidas, jogador suspenso, jogo em campo neutro..."></textarea>
+      </div>
+      <div class="options-row">
+        <label class="toggle-label">
+          <input type="checkbox" id="ao-vivo" />
+          <span class="toggle"></span>
+          Incluir oportunidades ao vivo (in-play)
+        </label>
+        <label class="toggle-label">
+          <input type="checkbox" id="pre-jogo" checked />
+          <span class="toggle"></span>
+          Incluir oportunidades pré-jogo
+        </label>
+      </div>
+      <button class="btn-primary" id="btn-analisar" onclick="analisarJogos()">
+        🔍 Analisar com IA
+      </button>
+    </div>
+
+    <div class="loading" id="loading" style="display:none;">
+      <div class="spinner"></div>
+      <p>Analisando histórico e calculando oportunidades...</p>
+    </div>
+
+    <div id="resultados"></div>
+
+    <div class="disclaimer">
+      ⚠️ <strong>Aviso:</strong> Este app é apenas para fins informativos e educacionais.
+      Aposte com responsabilidade. Análises de IA não garantem resultados.
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
